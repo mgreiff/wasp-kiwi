@@ -8,7 +8,7 @@ to follow a leader at a fixed distance based on taken images and ultrasonic
 distance measurements. In groups of two, students were given some flexibility
 in defining both the problem and the solution, with many ending up using OpenCV
 with simpler P or PD controllers. However, as the found solutions differed between
-the groups, the repository is structured in a set of X directories named `/groupX',
+the groups, the repository is structured in a set of X directories named `/groupX`,
 each containing the source code developed by the corresponding group and a
 short description of the solutions.
 
@@ -16,15 +16,23 @@ short description of the solutions.
 Please refer to the repository with the stock [KIWI code ](https://github.com/chalmers-revere/2018-wasp-summer-school) for installation instructions and
 additional details on operating the car.
 
-## Group - Code (Y/N) - Docs (Y/N) - Members
-Group 0 - N - N - Marcus, Johan, Abdel
-Group 1 - N - N - 
-Group 2 - N - N - 
-Group 3 - N - N - 
-Group 4 - N - N - 
-Group 5 - N - N - 
-Group 6 - N - N - 
-Group 7 - N - N - 
-Group 8 - N - N - 
-Group 9 - N - N - 
+## Group (Number) - Code (Y/N) - Docs (Y/N) - Members
+0 - N - N - Marcus, Johan, Abdel
 
+1 - N - N - 
+
+2 - N - N - 
+
+3 - N - N - 
+
+4 - N - N - 
+
+5 - N - N - 
+
+6 - N - N - 
+
+7 - N - N - 
+
+8 - N - N - 
+
+9 - N - N - 
