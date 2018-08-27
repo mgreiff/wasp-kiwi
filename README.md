@@ -17,15 +17,25 @@ Please refer to the repository with the stock [KIWI code ](https://github.com/ch
 additional details on operating the car.
 
 ## Group - Code (Y/N) - Docs (Y/N) - Members
+
 Group 0 - Y - Y - Jonas Krook, Gustaf Waldemarson
+
 Group 1 - Y - Y - Marcus Greiff, Johan Ruuskanen, Abdelrahman Eldesokey 
-Group 2 - Y - Y - John Törnblom, Hannes Eriksson
+
+Group 2 - Y - Y - John TÃ¶rnblom, Hannes Eriksson
+
 Group 3 - Y - Y - Veronika Domova, Christian Berger
-Group 4 - Y - Y - Timotheus Kampik, Gonçalo
+
+Group 4 - Y - Y - Timotheus Kampik, GonÃ§alo
+
 Group 5 - Y - Y - Haorui Peng, Mina Ferizbegovic
+
 Group 6 - Y - Y - Caroline Svahn, Peter Varnai
-Group 7 - Y - Y - Christopher Blöcker, Martin Larsson
+
+Group 7 - Y - Y - Christopher BlÃ¶cker, Martin Larsson
+
 Group 8 - N - N - 
+
 Group 9 - N - N - 
 
 
