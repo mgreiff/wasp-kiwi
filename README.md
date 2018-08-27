@@ -34,7 +34,7 @@ Group 6 - Y - Y - Caroline Svahn, Peter Varnai
 
 Group 7 - Y - Y - Christopher BlÃ¶cker, Martin Larsson
 
-Group 8 - Y - N - Claudio Mandrioli, Johan Källström
+Group 8 - Y - Y - Claudio Mandrioli, Johan Källström
 
 Group 9 - N - N - 
 
