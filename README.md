@@ -23,7 +23,9 @@ Group 2 - Y - Y - John Törnblom, Hannes Eriksson
 Group 3 - Y - Y - Veronika Domova, Christian Berger
 Group 4 - Y - Y - Timotheus Kampik, Gonçalo
 Group 5 - Y - Y - Haorui Peng, Mina Ferizbegovic
-Group 6 - N - N - 
+Group 6 - Y - Y - Caroline Svahn, Peter Varnai
 Group 7 - N - N - 
 Group 8 - N - N - 
 Group 9 - N - N - 
+
+

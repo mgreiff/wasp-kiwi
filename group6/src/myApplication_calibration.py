@@ -20,7 +20,6 @@
 import sysv_ipc
 # numpy and cv2 are needed to access, modify, or display the pixels
 import numpy
-import time
 import cv2
 # OD4Session is needed to send and receive messages
 import OD4Session
@@ -28,10 +27,6 @@ import OD4Session
 import opendlv_standard_message_set_v0_9_6_pb2
 
 currentDistance = { "value": 0.0 }
-d = 0.0
-velocity = 0.0
-d_old = 0.0
-time_old = 0.0
 
 ################################################################################
 # This callback is triggered whenever there is a new distance reading coming in.
@@ -47,7 +42,7 @@ def onDistance(msg, senderStamp, timeStamps):
 # Replay mode: CID = 253
 # Live mode: CID = 112
 # TODO: Change to CID 112 when this program is used on Kiwi.
-session = OD4Session.OD4Session(cid=112)
+session = OD4Session.OD4Session(cid=253)
 # Register a handler for a message; the following example is listening
 # for messageID 1039 which represents opendlv.proxy.DistanceReading.
 # Cf. here: https://github.com/chalmers-revere/opendlv.standard-message-set/blob/master/opendlv.odvd#L113-L115
@@ -69,27 +64,24 @@ shm = sysv_ipc.SharedMemory(keySharedMemory)
 mutex = sysv_ipc.Semaphore(keySemCondition)
 cond = sysv_ipc.Semaphore(keySemCondition)
 
-################################################################################
-# Main loop to process the next image frame coming in.
-old_time = time.time()
-loop = 0
-
 cx = 320
 cy = 240
 wx = 319
 wy = 239
 
 # inital search parameters
-H = 80
+H = 85
 sH = 15
-S = 170
-sS = 85
-V = 140
-sV = 90
+S = 140
+sS = 50
+V = 180
+sV = 70
 
 foundSquare = False
 failCount = 0
 
+################################################################################
+# Main loop to process the next image frame coming in.
 while True:
     # Wait for next notification.
     cond.Z()
@@ -123,6 +115,9 @@ while True:
         # apply aggressive erosion
         kernel = numpy.ones((15, 15), numpy.uint8)
         mask = cv2.erode(mask, kernel, iterations=1)
+        cv2.imshow("initmask", mask);
+        print hsv[230:250,310:330]
+        cv2.waitKey(1000);
 
         # find countours and bounding box
         _, contours, _ = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -134,25 +129,9 @@ while True:
             cy = 240
             wx = 319
             wy = 239
-            if (failCount > 1):
-                sH  = min(sH + 1, 15)
-                sS += 1
-                sV += 1
-            if (failCount > 6):
-                groundSteeringRequest = opendlv_standard_message_set_v0_9_6_pb2.opendlv_proxy_GroundSteeringRequest()
-                groundSteeringRequest.groundSteering = 0.0
-                session.send(1090, groundSteeringRequest.SerializeToString());
-
-                pedalPositionRequest = opendlv_standard_message_set_v0_9_6_pb2.opendlv_proxy_PedalPositionRequest()
-                pedalPositionRequest.position = 0.0
-                session.send(1086, pedalPositionRequest.SerializeToString());
-            if (failCount > 20):
-                H = 80
-                sH = 15
-                S = 170
-                sS = 85
-                V = 140
-                sV = 90
+            sH  = min(sH + 1, 15)
+            sS += 1
+            sV += 1
             continue
 
         maxh = 0
@@ -177,15 +156,12 @@ while True:
         cx = int((maxx + minx)/2)
         cy = int((maxy + miny)/2)
         wx = int((maxx - minx)*1.1/2)+20
-        wy = int((maxy - miny)*1.1/2)+20       
+        wy = int((maxy - miny)*1.1/2)+20
+        
+        
 
         # find color bounds within found rectangle
-        maxx += 1
-        maxy += 1
         hue, sat, val = hsv[miny:maxy, minx:maxx,0], hsv[miny:maxy, minx:maxx,1], hsv[miny:maxy, minx:maxx,2]
-        if (len(hue) <= 0):
-            continue
-
         minH = int(numpy.min(hue))
         maxH = int(numpy.max(hue))
         minS = int(numpy.min(sat))
@@ -193,18 +169,12 @@ while True:
         minV = int(numpy.min(val))
         maxV = int(numpy.max(val))
         
-        # H = int((minH + maxH)/2)
-        # S = int((minS + maxS)/2)
-        # V = int((minV + maxV)/2)
-        # sH = int((maxH - minH)/2)+2
-        # sS = int((maxS - minS)/2)+10
-        # sV = int((maxV - minV)/2)+20    
-        H = int(round(numpy.mean(hue)))
-        S = int(round(numpy.mean(sat)))
-        V = int(round(numpy.mean(val))) 
-        sH = min(int(round(numpy.std(hue)*2))+5, 15)
-        sS = int(round(numpy.std(sat)*2))+10
-        sV = int(round(numpy.std(val)*2))+20
+        H = int((minH + maxH)/2)
+        S = int((minS + maxS)/2)
+        V = int((minV + maxV)/2)
+        sH = int((maxH - minH)/2)+2
+        sS = int((maxS - minS)/2)+10
+        sV = int((maxV - minV)/2)+20     
         foundSquare = True
 
     # display location and color used in this round
@@ -228,6 +198,7 @@ while True:
 
     # filter for green color
     mask = cv2.inRange(hsv, lower_green, upper_green)
+    cv2.imshow("Filtered mask", mask);
     # erode and dilate to get only the green post-it note
     # kernel = numpy.ones((3, 3), numpy.uint8)
     # mask = cv2.erode(mask, kernel, iterations=1)    
@@ -240,7 +211,7 @@ while True:
     else:
         cX = cx - offsetx
         cY = cy - offsety
-
+    
     # calculate height of post-it note in pixels
     # find top point of square
     miny = 0
@@ -290,8 +261,7 @@ while True:
     h = (maxy - miny)
     w = (maxx - minx)
     print("Detected height: %d, width: %d" % (h, w))
-
-    if (h > 8 and h < 400 and w > 5 and w < 400):
+    if (h > 2 and h < 400 and w > 2 and w < 400):
         wx = int(round(1.3*(w+5)/2))+5
         wy = int(round(1.3*(h+5)/2))+5
         cx = cX + offsetx
@@ -306,100 +276,45 @@ while True:
         minV = int(numpy.min(val))
         maxV = int(numpy.max(val))
         
-        alpha = 0.95
-        H = alpha*int(round(numpy.mean(hue))) + (1-alpha)*H
-        S = alpha*int(round(numpy.mean(sat))) + (1-alpha)*S
-        V = alpha*int(round(numpy.mean(val))) + (1-alpha)*S
+        H = int(round(numpy.mean(hue)))
+        S = int(round(numpy.mean(sat)))
+        V = int(round(numpy.mean(val)))
         sH = min(int(round(numpy.std(hue)*2))+5, 15)
         sS = int(round(numpy.std(sat)*2))+10
         sV = int(round(numpy.std(val)*2))+20
         
     else:
-        loop = 0
         foundSquare = False
         continue
 
     print("Updated search values:")
     print("CX: %d, CY: %d, WX: %d, WY: %d" % (cx, cy, wx, wy))
     print("H: %d, S: %d  V: %d" % (H, S, V))
-    print("sH: %d, sS: %d  sV: %d" % (sH, sS, sV))   
+    print("sH: %d, sS: %d  sV: %d" % (sH, sS, sV))
 
     h = h / 10.0 + 0.001
 
-    # calculate actual distance estimate
-    d_old = d
+    # F = open("data.txt","a") 
+    # F.write(str(h) + " " + str(currentDistance["value"])+ "\n")
+    # F.close()
+
+    # compare with estimated distance
     d_est = 1/(0.023743329587365*h*h + 0.170169550081314*h + 0.175207394929190)
-    # TODO: compare with measured distance and adjust if needed
-    alpha = 1 #min(abs(320 - cX), 70) / 70 * 0.75+ 0.25
-    d = alpha*d_est + (1-alpha)*currentDistance["value"]+0.0001
 
-    # get elapse time
-    current_time = time.time()
-    dt = current_time - old_time
-    old_time = current_time
+    print("Measured distance: " + str(currentDistance["value"]))
+    print("Estimate distance: " + str(d_est) + "\n")
 
-    # filtered velocity    
-    if (loop > 0):
-        newvelocity= (d - d_old)/dt
-        alpha = 0.5
-        velocity = alpha * newvelocity + (1-alpha) * velocity
-        if abs(velocity) > 0.5:
-            velocity = 0.5*velocity/abs(velocity)
-    
-        print "VELOCITY INFO"
-        print h
-        print currentDistance["value"]
-        print d
-        print d_old
-        print dt
-        print velocity
+    #convert 1D array to 3D, then convert it to YCrCb and take the first element 
+    #dst = cv2.cornerHarris(numpy.float32(mask), 2, 3, 0.04)
+    #cv2.imshow("corners", dst)
+    cv2.imshow("mask", mask);
 
-    # calculate angle deviation
-    dximg = (320.0 - cx)/10.0
-    dx = dximg / h * 0.075
-    angle = numpy.arctan(dx / d)/3.141529*180
+    # The following example is adding a red rectangle and displaying the result.
+    #cv2.rectangle(img, (50, 50), (100, 100), (0,0,255), 2)
 
-    if (angle > 180.0):
-        angle -= 360.0
-    angle = max(-90.0, min(90.0, angle))
-
-    # augment perceived distance
-    pd = min((abs((angle/180*3.141529)**3)), 0.3)
-
-
-    P = 0.13
-    D = 0.03
-    kappa = 80.0
-    basePedal = P * ((d-pd) - 0.35) + D*velocity
-    pedalControl = basePedal
-    if (pedalControl > 0.0):
-        pedalControl += (1 - numpy.exp(-kappa*pedalControl))*0.10
-    else:
-        pedalControl *= 4
-        pedalControl -= (1 - numpy.exp(kappa*pedalControl))*0.36
-
-    pedalControl = max(-1.0, min(0.25, pedalControl))
-
-    # calculate control values
-    P = 0.3
-    steerControl = P*angle
-    steerControl = max(-38.0, min(38.0, steerControl))
-    steerControl *= (3.141529/180)
-    if (basePedal > 0):
-        steerControl *= (1 - numpy.exp(-kappa*basePedal))
-    else:
-        steerControl *= -(1 - numpy.exp(kappa*basePedal))
-
-    
-    
-    print "OUR CONTROL VALUES ARE"
-    print steerControl
-    print pedalControl
-
-    if (loop < 3 or h < .5 or h > 40 or currentDistance["value"] < -0.15):
-        pedalControl = 0.0
-        steerControl = 0.0
-    
+    # TODO: Disable the following two lines before running on Kiwi:
+    cv2.imshow("image", img);
+    cv2.waitKey(2);
 
     ############################################################################
     # Example for creating and sending a message to other microservices; can
@@ -415,15 +330,13 @@ while True:
     #
     # Uncomment the following lines to steer; range: +38deg (left) .. -38deg (right).
     # Value groundSteeringRequest.groundSteering must be given in radians (DEG/180. * PI).
-    groundSteeringRequest = opendlv_standard_message_set_v0_9_6_pb2.opendlv_proxy_GroundSteeringRequest()
-    groundSteeringRequest.groundSteering = steerControl
-    session.send(1090, groundSteeringRequest.SerializeToString());
+    #groundSteeringRequest = opendlv_standard_message_set_v0_9_6_pb2.opendlv_proxy_GroundSteeringRequest()
+    #groundSteeringRequest.groundSteering = 0
+    #session.send(1090, groundSteeringRequest.SerializeToString());
 
     # Uncomment the following lines to accelerate/decelerate; range: +0.25 (forward) .. -1.0 (backwards).
     # Be careful!
-    pedalPositionRequest = opendlv_standard_message_set_v0_9_6_pb2.opendlv_proxy_PedalPositionRequest()
-    pedalPositionRequest.position = pedalControl
-    session.send(1086, pedalPositionRequest.SerializeToString());
-
-    loop += 1
+    #pedalPositionRequest = opendlv_standard_message_set_v0_9_6_pb2.opendlv_proxy_PedalPositionRequest()
+    #pedalPositionRequest.position = 0
+    #session.send(1086, pedalPositionRequest.SerializeToString());
 
