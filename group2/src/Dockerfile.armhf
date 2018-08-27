@@ -50,4 +50,4 @@ RUN make
 
 RUN ["cross-build-end"]
 
-ENTRYPOINT ["/opt/sources/myApplication.py"]
+ENTRYPOINT ["/opt/sources/main.py"]

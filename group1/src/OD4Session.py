@@ -54,7 +54,7 @@ class OD4Session:
             self.isRunning = True
 
 
-    def send(self, messageID, rawStringFromMessageToSend, senderStamp=0):
+    def send(self, messageID, rawStringFromMessageToSend):
         now = time.time()
 
         sentTimeStamp = cluonDataStructures_pb2.cluon_data_TimeStamp()
@@ -67,7 +67,6 @@ class OD4Session:
         envelope.sent.microseconds = sentTimeStamp.microseconds
         envelope.sampleTimeStamp.seconds = sentTimeStamp.seconds
         envelope.sampleTimeStamp.microseconds = sentTimeStamp.microseconds
-        envelope.senderStamp = senderStamp;
         envelope.serializedData = rawStringFromMessageToSend
 
         serializedEnvelope = envelope.SerializeToString()
