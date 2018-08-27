@@ -16,23 +16,14 @@ short description of the solutions.
 Please refer to the repository with the stock [KIWI code ](https://github.com/chalmers-revere/2018-wasp-summer-school) for installation instructions and
 additional details on operating the car.
 
-## Group (Number) - Code (Y/N) - Docs (Y/N) - Members
-0 - N - N - Marcus, Johan, Abdel
-
-1 - N - N - 
-
-2 - N - N - 
-
-3 - N - N - 
-
-4 - N - N - 
-
-5 - N - N - 
-
-6 - N - N - 
-
-7 - N - N - 
-
-8 - N - N - 
-
-9 - N - N - 
+## Group - Code (Y/N) - Docs (Y/N) - Members
+Group 0 - Y - Y - Jonas Krook, Gustaf Waldemarson
+Group 1 - Y - Y - Marcus Greiff, Johan Ruuskanen, Abdelrahman Eldesokey 
+Group 2 - Y - Y - John Törnblom, Hannes Eriksson
+Group 3 - Y - Y - Veronika Domova, Christian Berger
+Group 4 - Y - Y - Timotheus Kampik, Gonçalo
+Group 5 - Y - Y - Haorui Peng, Mina Ferizbegovic
+Group 6 - N - N - 
+Group 7 - N - N - 
+Group 8 - N - N - 
+Group 9 - N - N - 
