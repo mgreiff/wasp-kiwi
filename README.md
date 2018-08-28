@@ -22,20 +22,20 @@ Group 0 - Y - Y - Jonas Krook, Gustaf Waldemarson
 
 Group 1 - Y - Y - Marcus Greiff, Johan Ruuskanen, Abdelrahman Eldesokey 
 
-Group 2 - Y - Y - John TÃ¶rnblom, Hannes Eriksson
+Group 2 - Y - Y - John Tornblom, Hannes Eriksson
 
-Group 3 - Y - Y - Veronika Domova, Christian Berger
+Group 3 - Y - Y - Veronika Domova, Christian Rosdahl
 
-Group 4 - Y - Y - Timotheus Kampik, GonÃ§alo
+Group 4 - Y - Y - Timotheus Kampik, Goncalo
 
 Group 5 - Y - Y - Haorui Peng, Mina Ferizbegovic
 
 Group 6 - Y - Y - Caroline Svahn, Peter Varnai
 
-Group 7 - Y - Y - Christopher BlÃ¶cker, Martin Larsson
+Group 7 - Y - Y - Christopher Blacker, Martin Larsson
 
 Group 8 - Y - Y - Claudio Mandrioli, Johan Källström
 
-Group 9 - N - N - 
+Group 9 - Y - Y - Tobias Sundqvist, Martin Pallin
 
 
