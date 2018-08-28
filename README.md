@@ -38,4 +38,6 @@ Group 8 - Y - Y - Claudio Mandrioli, Johan Källström
 
 Group 9 - Y - Y - Tobias Sundqvist, Martin Pallin
 
+Group 10 - Y - Y - Lissy Pellaco, Emil Brissman
+
 
